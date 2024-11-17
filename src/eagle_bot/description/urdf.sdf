@@ -1,0 +1,136 @@
+<sdf version='1.7'>
+  <model name='bot'>
+    <link name='base_link'>
+      <inertial>
+        <pose>0.005237 0.001186 -0.123149 0 -0 0</pose>
+        <mass>6.83999</mass>
+        <inertia>
+          <ixx>0.237645</ixx>
+          <ixy>-0.0035278</ixy>
+          <ixz>-0.00036933</ixz>
+          <iyy>0.378489</iyy>
+          <iyz>-0.000475394</iyz>
+          <izz>0.613689</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://bot/meshes/base_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='base_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://bot/meshes/base_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='leftwheel_joint' type='revolute'>
+      <pose relative_to='base_link'>0.006551 0.34002 -0.067645 0 -0 0</pose>
+      <parent>base_link</parent>
+      <child>leftwheel_link</child>
+      <axis>
+        <xyz>0 -1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='leftwheel_link'>
+      <pose relative_to='leftwheel_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>-0 -0.6832 0 0 -0 0</pose>
+        <mass>0.758212</mass>
+        <inertia>
+          <ixx>0.00240691</ixx>
+          <ixy>8.27945e-18</ixy>
+          <ixz>-4.60306e-19</ixz>
+          <iyy>0.00459256</iyy>
+          <iyz>1.81099e-18</iyz>
+          <izz>0.00240691</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftwheel_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://bot/meshes/leftwheel_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftwheel_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://bot/meshes/leftwheel_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='rightwheel_joint' type='revolute'>
+      <pose relative_to='base_link'>0.006551 -0.34068 -0.067645 0 -0 0</pose>
+      <parent>base_link</parent>
+      <child>rightwheel_link</child>
+      <axis>
+        <xyz>0 -1 0</xyz>
+        <limit>
+          <effort>1</effort>
+          <velocity>1</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='rightwheel_link'>
+      <pose relative_to='rightwheel_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>-0 -0.0025 0 0 -0 0</pose>
+        <mass>0.758212</mass>
+        <inertia>
+          <ixx>0.00240691</ixx>
+          <ixy>8.27716e-18</ixy>
+          <ixz>-4.60525e-19</ixz>
+          <iyy>0.00459256</iyy>
+          <iyz>1.81073e-18</iyz>
+          <izz>0.00240691</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightwheel_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://bot/meshes/rightwheel_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightwheel_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://bot/meshes/rightwheel_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
