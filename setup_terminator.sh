@@ -1,11 +1,18 @@
 """
-# Created: 2021-08-17
 This script is used to setup Terminator with multiple tabs and commands for ROS 2.
+It will start the following in separate tabs:
+    1. Eagle Launch
+    2. Navigation Launch
+    3. RPLidar Launch
+    4. Keyboard Control
+    5. ROS Bag Record
+
 To run this script, you need to make it executable first:
     chmod +x setup_terminator.sh
-Then, you can run it:
+Then, you can run it in the green_robot folder:
     ./setup_terminator.sh
 """
+
 # Source ROS 2 setup
 source /opt/ros/galactic/setup.bash
 
@@ -16,8 +23,4 @@ colcon build --symlink-install
 source ./install/setup.bash
 
 # Start Terminator with multiple tabs and commands
-terminator -T "Eagle Launch" -e "bash -c 'ros2 launch eagle_bot eagle_launch.py; exec bash'" \
-           -T "Navigation Launch" -e "bash -c 'ros2 launch nav2_bringup nav_launch.py; exec bash'" \
-           -T "RPLidar Launch" -e "bash -c 'ros2 launch sllidar_ros2 rplidar.launch.py; exec bash'" \
-           -T "Keyboard Control" -e "bash -c 'ros2 run teleop_twist_keyboard teleop_twist_keyboard; exec bash'" \
-           -T "ROS Bag Record" -e "bash -c 'ros2 bag record /topic1 /topic2; exec bash'"
+ros2 launch eagle_launch.py

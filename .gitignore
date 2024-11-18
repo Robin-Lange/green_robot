@@ -1,3 +1,5 @@
+# Ignore bundler config.
+
 # Ignore build directory
 build/
 

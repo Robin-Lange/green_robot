@@ -1,4 +1,6 @@
 """
+    This script installs all the dependencies required for the ROS 2 Galactic packages in your workspace.
+
     To determine if there are any additional dependencies required for your workspace, you can use the rosdep tool. rosdep helps you install system dependencies for ROS packages. Here is how you can use it:
     Make sure rosdep is installed:
         sudo apt install python3-rosdep
