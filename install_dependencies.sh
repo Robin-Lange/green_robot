@@ -29,7 +29,8 @@ sudo apt install -y \
     ros-galactic-ros2-control \
     ros-galactic-ros2-controllers \
     libserial-dev \
-    python3-rosdep
+    python3-rosdep \
+    ros-galactic-twist-mux
 
 # Initialize rosdep
 sudo rosdep init
