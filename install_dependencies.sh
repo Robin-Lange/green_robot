@@ -1,5 +1,3 @@
-#!/bin/bash
-
 """
     To determine if there are any additional dependencies required for your workspace, you can use the rosdep tool. rosdep helps you install system dependencies for ROS packages. Here is how you can use it:
     Make sure rosdep is installed:
@@ -10,11 +8,11 @@
     Navigate to the root of your ROS workspace and run:
         rosdep install --from-paths src --ignore-src -r -y
     This command will check all the packages in your workspace and install any missing dependencies.
+    
+    or you can run:
+    chmod +x install_dependencies.sh
+    ./install_dependencies.sh
 """
-
-#execute this script by running:
-    # chmod +x install_dependencies.sh
-    #./install_dependencies.sh
 
 # Install ROS 2 Galactic dependencies
 sudo apt update
