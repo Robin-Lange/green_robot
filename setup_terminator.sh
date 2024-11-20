@@ -22,4 +22,4 @@ colcon build --symlink-install
 source ./install/setup.bash
 
 # Start Terminator with multiple tabs and commands
-ros2 launch eagle.launch.py
+ros2 launch  eagle_bot eagle.launch.py
