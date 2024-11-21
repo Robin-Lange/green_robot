@@ -21,6 +21,17 @@ sudo apt install libserial-dev
 Step 2: Write the udev Rule
 Open or create a new udev rules file in /etc/udev/rules.d/. For Arduino, the file is often named 99-arduino.rules:
 
+
+use lsusb to find the values for the Arduino 
+The idVendor (VID) and idProduct (PID) are identifiers used to recognize USB devices. To find the VID and PID for your Arduino Mega, follow these steps:
+
+Connect your Arduino Mega: Plug your Arduino Mega into your computer.
+
+List USB devices: Use the lsusb command to list all connected USB devices:
+
+Identify your Arduino Mega: Look for an entry that corresponds to your Arduino Mega. It will look something like this:
+
+Extract VID and PID: The numbers before the device name are the VID and PID. In the example above, 2341 is the idVendor and 0042 is the idProduct.
 bash
 Copy code
 sudo nano /etc/udev/rules.d/99-arduino.rules
@@ -29,6 +40,7 @@ Add the following rule (adjust VID and PID as necessary):
 plaintext
 Copy code
 SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", MODE="0666", SYMLINK+="arduino_mega"
+
 SUBSYSTEM=="tty": Matches USB serial devices.
 ATTRS{idVendor} and ATTRS{idProduct}: Match the VID and PID of your Arduino Mega.
 MODE="0666": Grants read/write access to all users.
@@ -67,4 +79,4 @@ Keyboard control of robot without topic remapping (should work for simulation en
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 Keyboard control to drive physical robot:
-ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_cont/cmd_vel_unstamped
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped
