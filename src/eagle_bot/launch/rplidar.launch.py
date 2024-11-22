@@ -15,10 +15,10 @@ from launch_ros.actions import Node
 def generate_launch_description():
     channel_type = LaunchConfiguration("channel_type", default="serial")
     serial_port = LaunchConfiguration("serial_port", default="/dev/ttyUSB0")
+    # serial_baudrate = LaunchConfiguration("serial_baudrate", default="256000")  # for A3 is 256000
     serial_baudrate = LaunchConfiguration(
-        "serial_baudrate", default="256000"
-    )  # for A3 is 256000
-    # serial_baudrate = LaunchConfiguration('serial_baudrate', default='1000000') #for s2 is 1000000
+        "serial_baudrate", default="1000000"
+    )  # for s2 is 1000000
 
     frame_id = LaunchConfiguration("frame_id", default="laser_frame")
     inverted = LaunchConfiguration("inverted", default="false")
