@@ -12,16 +12,20 @@ from launch.event_handlers import OnProcessStart
 
 from launch_ros.actions import Node
 
-package_name='eagle_bot'
+package_name = "eagle_bot"
+
 
 def generate_launch_description():
-    robot_description = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
-    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers.yaml')
+    robot_description = Command(
+        ["ros2 param get --hide-type /robot_state_publisher robot_description"]
+    )
+    controller_params_file = os.path.join(
+        get_package_share_directory(package_name), "config", "my_controllers.yaml"
+    )
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[{'robot_description': robot_description},
-                    controller_params_file]
+        parameters=[{"robot_description": robot_description}, controller_params_file],
     )
 
     diff_drive_spawner = Node(
@@ -52,17 +56,23 @@ def generate_launch_description():
         )
     )
 
-
     rsp = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true', 'use_ros2_control': 'true'}.items()
+        PythonLaunchDescriptionSource(
+            [
+                os.path.join(
+                    get_package_share_directory(package_name), "launch", "rsp.launch.py"
+                )
+            ]
+        ),
+        launch_arguments={"use_sim_time": "true", "use_ros2_control": "true"}.items(),
     )
 
-        # Launch them all!
-    return LaunchDescription([
-        #rsp, ##For testing purposes
-        delayed_controller_manager,
-        delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner
-    ])
+    # Launch them all!
+    return LaunchDescription(
+        [
+            # rsp, ##For testing purposes
+            delayed_controller_manager,
+            delayed_diff_drive_spawner,
+            delayed_joint_broad_spawner,
+        ]
+    )

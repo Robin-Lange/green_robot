@@ -12,8 +12,8 @@
 #Then, you can run it in the green_robot folder:
 #    ./setup_terminator.sh
 
-# Source ROS 2 setup
-source /opt/ros/galactic/setup.bash
+# Source ROS 2 setup automatic otherwise
+#source /opt/ros/galactic/setup.bash
 
 # Build the workspace
 colcon build --symlink-install
@@ -23,6 +23,10 @@ source install/setup.bash
 
 # Start Terminator with multiple tabs and commands
 ros2 launch  eagle_bot eagle.launch.py
+
+#Testing lidar
+ros2 launch sllidar_ros2 view_sllidar_s2_launch.py
+
 
 
 #Manual control
