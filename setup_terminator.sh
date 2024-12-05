@@ -22,6 +22,7 @@ colcon build --symlink-install
 source install/setup.bash
 
 # Start Terminator with multiple tabs and commands
+#disconnect the arduino every time you abort the eagle.launch
 ros2 launch  eagle_bot eagle.launch.py
 
 #Testing lidar
