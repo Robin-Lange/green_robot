@@ -49,9 +49,8 @@
       profile = default
       uuid = 7cfaf96c-7a12-467c-97b4-1f3e1f033501
       command = "fourth_command"
-  [[greenrobot]]
+  [[greenrobot_manuel]]
     [[[child0]]]
-
       type = Window
       parent = ""
       order = 0
@@ -74,7 +73,9 @@
       order = 0
       profile = default
       uuid = 7091d128-6dae-4167-bf37-1efad47ea681
-      command = "first_command; second_command"
+      command = "source install/setup.bash
+; ros2 launch  eagle_bot eagle.launch.py
+"
     [[[child3]]]
       type = VPaned
       parent = child1
@@ -87,12 +88,16 @@
       order = 0
       profile = default
       uuid = e20df2ec-ec78-479c-926a-43fe4e3c3378
-      command = "third_command"
+      command = "source install/setup.bash
+; ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped
+"
     [[[terminal5]]]
       type = Terminal
       parent = child3
       order = 1
       profile = default
       uuid = 7cfaf96c-7a12-467c-97b4-1f3e1f033501
-      command = "fourth_command"
+      command = "source install/setup.bash
+; sleep(7); ros2 launch eagle_bot nav_launch.py
+"
 [plugins]
