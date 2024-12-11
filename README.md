@@ -80,3 +80,6 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 Keyboard control to drive physical robot:
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped
+
+
+For autonomous driving, use 2D Pose estimate where the robot is approximately to get started then it will navigate to the set waypoint
