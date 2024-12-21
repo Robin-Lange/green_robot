@@ -82,7 +82,7 @@ Keyboard control to drive physical robot:
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped
 
 
-For autonomous driving, use 2D Pose estimate where the robot is approximately to get started then it will navigate to the set waypoint. In order to do so, use the command ´2D Pose Estimate´ in the top bar in the RVIZ interface. The robot will locate itself in the existing map. Then use ´NAV2 Goal´ to let it drive to the dedicated spot. Make sure you use the correct map
+For autonomous driving, use 2D Pose estimate where the robot is approximately to get started then it will navigate to the set waypoint. To do so, use the command **2D Pose Estimate** in the top bar in the RVIZ interface. The robot will locate itself in the existing map. Then use **NAV2 Goal** to let it drive to the dedicated spot. Make sure you use the correct map
 
 
 
