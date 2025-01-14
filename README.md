@@ -1,4 +1,10 @@
 # green_robot
+## To Do
+- optimize code and folders
+- tweak the control
+- use a solidworks model to have an organized layout
+-------------------------------------------------
+
 Project for the green warehouse robot
 
 Before running, make sure all dependencies are installed, see install_dependencies.sh
