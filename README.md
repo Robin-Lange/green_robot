@@ -1,4 +1,5 @@
 # green_robot
+Installing pip packages: `pip3 install -r requirements.txt`
 ## To Do
 - optimize code and folders
 - tweak the control
