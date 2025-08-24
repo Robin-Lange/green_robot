@@ -1,7 +1,7 @@
 # ROS2 Wrapper for Intel&reg; RealSense&trade; Devices
 These are packages for using Intel RealSense cameras (D400 and L500 series, SR300 camera and T265 Tracking Module) with ROS2.
 
-This version supports ROS2 Dashing, Eloquent, Foxy, Galactic and Rolling.
+This version supports ROS2 Humble and Rolling.
 
 LibRealSense supported version: v2.51.1 (see [realsense2_camera release notes](https://github.com/IntelRealSense/realsense-ros/releases))
 
@@ -30,12 +30,6 @@ LibRealSense supported version: v2.51.1 (see [realsense2_camera release notes](h
    ### Step 1: Install the ROS2 distribution
  - #### Ubuntu 22.04:
    - [ROS2 Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
- - #### Ubuntu 20.04: 
-   - [ROS2 Foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)
-   - [ROS2 Galactic](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
- - #### Ubuntu 18.04 : 
-   - [ROS2 Dashing](https://docs.ros.org/en/dashing/Installation/Ubuntu-Install-Debians.html)
-   - [ROS2 Eloquent](https://docs.ros.org/en/eloquent/Installation/Linux-Install-Debians.html)
 
 
 ### Step 2: Install the latest Intel&reg; RealSense&trade; SDK 2.0
@@ -64,7 +58,7 @@ LibRealSense supported version: v2.51.1 (see [realsense2_camera release notes](h
 ### Step 4: Install dependencies
    ```bash
    sudo apt-get install python3-rosdep -y
-   sudo rosdep init # "sudo rosdep init --include-eol-distros" for Dashing
+   sudo rosdep init
    rosdep update
    rosdep install -i --from-path src --rosdistro $ROS_DISTRO --skip-keys=librealsense2 -y
    ```
@@ -76,7 +70,7 @@ LibRealSense supported version: v2.51.1 (see [realsense2_camera release notes](h
 
 ### Step 6: Terminal environment
    ```bash
-   ROS_DISTRO=<YOUR_SYSTEM_ROS_DISTRO>  # set your ROS_DISTRO: humble, galactic, foxy, eloquent, dashing
+   ROS_DISTRO=humble  # set your ROS_DISTRO: humble
    source /opt/ros/$ROS_DISTRO/setup.bash
    cd ~/ros2_ws
    . install/local_setup.bash
@@ -183,7 +177,7 @@ The following processing blocks are available:
    - ```hole_filling_filter``` - apply hole-filling filter.
    - ```decimation_filter``` - reduces depth scene complexity.
 
-Each of the above filters have it's own parameters, following the naming convention of `<filter_name>.<parameter_name>` including a `<filter_name>.enable` parameter to enable/disable it. 
+Each of the above filters have it's own parameters, following the naming convention of `<filter_name>.<parameter_name>` including a `<filter_name>.enable` parameter to enable/disable it.
 
 ### Sensor Parameters:
 Each sensor has a unique set of parameters.
@@ -205,7 +199,7 @@ For setting a new value for a parameter use `ros2 param set <node> <parameter_na
 - **enable_sync**: gathers closest frames of different sensors, infra red, color and depth, to be sent with the same timetag. This happens automatically when such filters as pointcloud are enabled.
 - ***<stream_type>*_qos**: <stream_type> can be any of *infra, color, fisheye, depth, gyro, accel, pose*. Sets the QoS by which the topic is published. Available values are the following strings: SYSTEM_DEFAULT, DEFAULT, PARAMETER_EVENTS, SERVICES_DEFAULT, PARAMETERS, SENSOR_DATA.
 - **Notice:** ***<stream_type>*_info_qos** refers to both camera_info topics and metadata topics.
-- **tf_publish_rate**: double, positive values mean dynamic transform publication with specified rate, all other values mean static transform publication. Defaults to 0 
+- **tf_publish_rate**: double, positive values mean dynamic transform publication with specified rate, all other values mean static transform publication. Defaults to 0
 
 
 
@@ -218,7 +212,7 @@ For setting a new value for a parameter use `ros2 param set <node> <parameter_na
 - **wait_for_device_timeout**: If the specified device is not found, will wait *wait_for_device_timeout* seconds before exits. Defualt, *wait_for_device_timeout < 0*, will wait indefinitely.
 - **rosbag_filename**: Publish topics from rosbag file. There are two ways for loading rosbag file:
    * Command line - ```ros2 run realsense2_camera realsense2_camera_node -p rosbag_filename:="/full/path/to/rosbag.bag"```
-   * Launch file - set ```rosbag_filename``` parameter with rosbag full path (see ```realsense2_camera/launch/rs_launch.py``` as reference) 
+   * Launch file - set ```rosbag_filename``` parameter with rosbag full path (see ```realsense2_camera/launch/rs_launch.py``` as reference)
 
 - **initial_reset**: On occasions the device was not closed properly and due to firmware issues needs to reset. If set to true, the device will reset prior to usage.
 
@@ -244,7 +238,7 @@ The `/diagnostics` topic includes information regarding the device temperatures 
 
 ### Available services:
 - device_info : retrieve information about the device - serial_number, firmware_version etc. Type `ros2 interface show realsense2_camera_msgs/srv/DeviceInfo` for the full list. Call example: `ros2 service call /camera/device_info realsense2_camera_msgs/srv/DeviceInfo`
-  - Note that for **ROS2 Dashing** the command is `ros2 srv show realsense2_camera_msgs/srv/DeviceInfo`
+
 ## Using T265 ##
 
 ### Start the camera node
@@ -267,7 +261,7 @@ Our ROS2 Wrapper node supports zero-copy communications if loaded in the same pr
 
 You will need to launch a component container and launch our node as a component together with other component nodes. Further details on "Composing multiple nodes in a single process" can be found [here](https://docs.ros.org/en/rolling/Tutorials/Composition.html).
 
-Further details on efficient intra-process communication can be found [here](https://docs.ros.org/en/foxy/Tutorials/Intra-Process-Communication.html#efficient-intra-process-communication).
+Further details on efficient intra-process communication can be found [here](https://docs.ros.org/en/humble/Tutorials/Intra-Process-Communication.html#efficient-intra-process-communication).
 
 ### Example
 #### Manually loading multiple components into the same process

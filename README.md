@@ -28,7 +28,7 @@ A brief overview of the most important directories:
 ## 💻 Installation & Setup
 
 ### 1. Dependencies
-This project requires ROS2 (Galactic recommended) and a few other system packages. An installation script is provided to simplify this process.
+This project requires ROS2 (Humble recommended) and a few other system packages. An installation script is provided to simplify this process.
 
 ```bash
 # Run the dependency installer
@@ -38,7 +38,7 @@ This project requires ROS2 (Galactic recommended) and a few other system package
 <details>
 <summary><strong>Manual Dependency Installation</strong></summary>
 
-If you prefer to install dependencies manually, you will need `ros-galactic-navigation2`, `ros-galactic-slam-toolbox`, `ros-galactic-ros2-control`, `ros-galactic-ros2-controllers`, and `gnome-terminal`.
+If you prefer to install dependencies manually, you will need `ros-humble-navigation2`, `ros-humble-slam-toolbox`, `ros-humble-ros2-control`, `ros-humble-ros2-controllers`, and `gnome-terminal`.
 </details>
 
 ### 2. Configure udev Rules (for Hardware)
@@ -122,7 +122,7 @@ The script will present a menu with three options:
 ---
 
 ## 📚 Useful Resources
-- [ROS2 Documentation](https://docs.ros.org/en/galactic/index.html)
+- [ROS2 Documentation](https://docs.ros.org/en/humble/index.html)
 - [Nav2 (Navigation2) Documentation](https://navigation.ros.org/)
 - [ros2_control Documentation](https://control.ros.org/master/index.html)
 - [Community Tutorials for `teleop_twist_keyboard`](https://index.ros.org/p/teleop_twist_keyboard/)

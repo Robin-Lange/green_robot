@@ -1,5 +1,5 @@
 """
-    This script installs all the dependencies required for the ROS 2 Galactic packages in your workspace.
+    This script installs all the dependencies required for the ROS 2 Humble packages in your workspace.
 
     To determine if there are any additional dependencies required for your workspace, you can use the rosdep tool. rosdep helps you install system dependencies for ROS packages. Here is how you can use it:
     Make sure rosdep is installed:
@@ -16,21 +16,21 @@
     ./install_dependencies.sh
 """
 
-# Install ROS 2 Galactic dependencies
+# Install ROS 2 Humble dependencies
 sudo apt update
 sudo apt install -y \
-    ros-galactic-joint-state-publisher-gui \
-    ros-galactic-xacro \
-    ros-galactic-gazebo-ros-pkgs \
-    ros-galactic-robot-localization \
-    ros-galactic-slam-toolbox \
-    ros-galactic-navigation2 \
-    ros-galactic-nav2-bringup \
-    ros-galactic-ros2-control \
-    ros-galactic-ros2-controllers \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-xacro \
+    ros-humble-gazebo-ros-pkgs \
+    ros-humble-robot-localization \
+    ros-humble-slam-toolbox \
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup \
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
     libserial-dev \
     python3-rosdep \
-    ros-galactic-twist-mux
+    ros-humble-twist-mux
 
 # Initialize rosdep
 sudo rosdep init

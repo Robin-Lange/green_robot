@@ -29,17 +29,15 @@ SLAMTEC LIDAR Tutorial: <https://github.com/robopeak/rplidar_ros/wiki>
 ## How to install ROS2
 
 [rolling](https://docs.ros.org/en/rolling/Installation.html),
-[humble](https://docs.ros.org/en/humble/Installation.html),
-[galactic](https://docs.ros.org/en/galactic/Installation.html),
-[foxy](https://docs.ros.org/en/foxy/Installation.html)
+[humble](https://docs.ros.org/en/humble/Installation.html)
 
 ## How to configuring your ROS 2 environment
 
-[Configuring your ROS 2 environment](https://docs.ros.org/en/foxy/Tutorials/Configuring-ROS2-Environment.html)
+[Configuring your ROS 2 environment](https://docs.ros.org/en/humble/Tutorials/Configuring-ROS2-Environment.html)
 
 ## How to Create a ROS2 workspace
 
-[ROS2 Tutorials Creating a workspace](https://docs.ros.org/en/foxy/Tutorials/Workspace/Creating-A-Workspace.html)
+[ROS2 Tutorials Creating a workspace](https://docs.ros.org/en/humble/Tutorials/Workspace/Creating-A-Workspace.html)
 
 1. example, choose the directory name ros2_ws, for "development workspace" :
 
@@ -64,11 +62,11 @@ SLAMTEC LIDAR Tutorial: <https://github.com/robopeak/rplidar_ros/wiki>
 
    ```bash
    cd ~/ros2_ws/
-   source /opt/ros/<rosdistro>/setup.bash
+   source /opt/ros/humble/setup.bash
    colcon build --symlink-install
    ```
 
-   if you find output like "colcon:command not found",you need separate [install colcon](https://docs.ros.org/en/foxy/Tutorials/Colcon-Tutorial.html#install-colcon) build tools.
+   if you find output like "colcon:command not found",you need separate [install colcon](https://docs.ros.org/en/humble/Tutorials/Colcon-Tutorial.html#install-colcon) build tools.
 
 3. Package environment setup
 
