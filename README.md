@@ -1,120 +1,128 @@
-# green_robot
-Installing pip packages: `pip3 install -r requirements.txt`
-## To Do
-- optimize code and folders
-- tweak the control
-- use a solidworks model to have an organized layout
--------------------------------------------------
+# Eagle Bot ROS2 Workspace
 
-Project for the green warehouse robot
+This repository contains the ROS2 workspace for the Eagle Bot, a differential drive robot designed for indoor warehouse environments.
 
-Before running, make sure all dependencies are installed, see install_dependencies.sh
+## Overview
 
-Tims emails:
+The goal of this project is to provide a fully autonomous mobile robot platform. It uses a differential drive base, is controlled via ROS2, and uses a LIDAR for SLAM (Simultaneous Localization and Mapping) and navigation.
 
-These are the ones I can think of off the top of my head. Ill email you more as I think of them.
+### Key Features
+- **ROS2-based:** Utilizes the modern ROS2 framework.
+- **Interactive Startup:** A single script (`start_robot.sh`) to launch all necessary nodes with a user-friendly menu.
+- **Navigation Ready:** Comes with configurations for the Nav2 stack, including modes for mapping, localization, and autonomous navigation.
+- **Tunable:** Key parameters for motor control and navigation are exposed in YAML files for easy tuning.
 
-sudo apt install ros-<ros2-distro>-joint-state-publisher-gui
-sudo apt install ros-<ros2-distro>-xacro
-sudo apt install ros-<ros2-distro>-gazebo-ros-pkgs
-sudo apt install ros-<ros2-distro>-robot-localization
-sudo apt install ros-<ros2-distro>-slam-toolbox
-sudo apt install ros-<ros2-distro>-navigation2
-sudo apt install ros-<ros2-distro>-nav2-bringup
-sudo apt install   ros-galactic-ros2-control
-sudo apt install   ros- galactic  -ros2-controllers
-sudo apt install libserial-dev
+---
 
-Step 2: Write the udev Rule
-Open or create a new udev rules file in /etc/udev/rules.d/. For Arduino, the file is often named 99-arduino.rules:
-use lsusb to find the values for the Arduino 
-The idVendor (VID) and idProduct (PID) are identifiers used to recognize USB devices. To find the VID and PID for your Arduino Mega, follow these steps:
-Connect your Arduino Mega: Plug your Arduino Mega into your computer.
-List USB devices: Use the lsusb command to list all connected USB devices:
-Identify your Arduino Mega: Look for an entry that corresponds to your Arduino Mega. It will look something like this:
-Extract VID and PID: The numbers before the device name are the VID and PID. In the example above, 2341 is the idVendor and 0042 is the idProduct.
+## Repository Structure
 
-`sudo nano /etc/udev/rules.d/99-arduino.rules`
-Add the following rule (adjust VID and PID as necessary):
-`SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", MODE="0666", SYMLINK+="arduino_mega"`
+A brief overview of the most important directories:
+- **/src/eagle_bot:** The main package for the robot.
+  - **/launch:** Contains all the ROS2 launch files.
+  - **/config:** Holds all the configuration files (Nav2, controllers, etc.).
+- **/src/diff_controller:** The `ros2_control` hardware interface for the differential drive base.
+- **/start_robot.sh:** The main script to run the robot.
 
-SUBSYSTEM=="tty": Matches USB serial devices.
-ATTRS{idVendor} and ATTRS{idProduct}: Match the VID and PID of your Arduino Mega.
-MODE="0666": Grants read/write access to all users.
-SYMLINK+="arduino_mega": Creates a user-friendly symlink (/dev/arduino_mega).
-Step 3: Apply the udev Rule
-Reload udev rules:
+---
 
-`sudo udevadm control --reload-rules`
-Unplug and replug your Arduino Mega to apply the new rule."
+## 💻 Installation & Setup
 
+### 1. Dependencies
+This project requires ROS2 (Galactic recommended) and a few other system packages. An installation script is provided to simplify this process.
 
-Run just navigation:
+```bash
+# Run the dependency installer
+./install_dependencies.sh
+```
 
-`ros2 launch nav2_bringup navigation_launch.py`
+<details>
+<summary><strong>Manual Dependency Installation</strong></summary>
 
-Run slam toolbox:
+If you prefer to install dependencies manually, you will need `ros-galactic-navigation2`, `ros-galactic-slam-toolbox`, `ros-galactic-ros2-control`, `ros-galactic-ros2-controllers`, and `gnome-terminal`.
+</details>
 
-`ros2 launch slam_toolbox online_async_launch.py`
+### 2. Configure udev Rules (for Hardware)
+To ensure your user has permission to access the robot's hardware (like the RPLIDAR and motor controller), you may need to add udev rules. These rules create a consistent device name (e.g., `/dev/rplidar`) and set the correct permissions.
 
-Run navigation with a defined parameter file
-`ros2 launch nav2_bringup navigation_launch.pyparams_file:=<full/path/to/config/nav2_params.yaml>`
+Refer to the documentation for your specific hardware (e.g., RPLIDAR, Arduino/microcontroller) to get the correct `idVendor` and `idProduct`.
 
-Run tools to see transform coordinate frames and connections
+<details>
+<summary><strong>Example: RPLIDAR udev Rule</strong></summary>
 
-`ros2 run tf2_tools view_frames.py`
+1.  Create a new rules file: `sudo nano /etc/udev/rules.d/99-rplidar.rules`
+2.  Add the following line (replace `2c42` if your vendor ID is different):
+    ```
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="2c42", MODE="0666", SYMLINK+="rplidar"
+    ```
+3.  Reload the rules: `sudo udevadm control --reload-rules`
+4.  Unplug and replug the device.
+</details>
 
-Node graph command
-`rqt_graph`
+### 3. Build the Workspace
+Compile the ROS2 packages using `colcon`.
 
-Keyboard control of robot without topic remapping (should work for simulation environment)
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```bash
+# From the root of the repository (the 'green_robot' folder)
+colcon build --symlink-install
+```
 
-Keyboard control to drive physical robot:
-`ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped`
+---
 
+## 🚀 Execution
 
-For autonomous driving, use 2D Pose estimate where the robot is approximately to get started then it will navigate to the set waypoint. To do so, use the command `2D Pose Estimate` in the top bar in the RVIZ interface. The robot will locate itself in the existing map. Then use `NAV2 Goal` to let it drive to the dedicated spot. Make sure you use the correct map
+The primary way to run the robot is with the interactive startup script.
 
+### Using the Interactive Startup Script
+This script handles sourcing the workspace and launching the correct nodes based on your selection.
 
+```bash
+# Make sure you are in the root of the repository
+./start_robot.sh
+```
+The script will present a menu with three options:
+1.  **Manual Control:** For driving the robot with the keyboard.
+2.  **Autonomous Navigation:** For navigating in a known, pre-mapped area.
+3.  **Mapping:** For creating a new map of an unknown area using SLAM.
 
-# Eagle2
+---
 
-## Simulation in gazebo
-change the used lidar
-### Needed Folders
-APRN_ws (launch files under src->v2->launch) [check for the slam parameter] and APRN_sim (all the data for the simulation)
-### World Map
-Either:
-- 'APRN_basic_2.sdf'
-- worldwpods.sdf
+## 🔧 Tuning & Troubleshooting
 
-### Launch files (simultaneously launch)
-launch_sn.launch.py
-nav_launch.py
+<details>
+<summary><strong>Problem: The robot drifts to one side when trying to drive straight.</strong></summary>
 
-### get ros2 rosbags in another terminal (that are not called rosbag)
-use ros2 topics list auch in kombi mit echo um die topics zu sehen
-get rosbag for position and lidar data
-lidardata should be something like laser_scan
+- **Cause:** Minor physical imperfections in the motors or wheels cause them to spin at slightly different rates.
+- **Solution:** Adjust the `wheel_radius_multiplier` parameters in `src/eagle_bot/config/my_controllers.yaml`.
+  - If the robot drifts **right**, the left wheel is spinning too fast. **Decrease** `left_wheel_radius_multiplier` by a small amount (e.g., to `0.99`).
+  - If the robot drifts **left**, the right wheel is spinning too fast. **Decrease** `right_wheel_radius_multiplier` by a small amount.
+  - **File to edit:** `src/eagle_bot/config/my_controllers.yaml`
+    ```yaml
+    left_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.0
+    ```
+</details>
 
+<details>
+<summary><strong>Problem: The robot "dances" or oscillates around the navigation goal without stopping.</strong></summary>
 
-Get manual drive and lidar data and encoder data ros bag
+- **Cause:** The goal tolerances for the navigation system are too strict. The robot gets very close to the goal but overshoots slightly and then tries to correct itself in a loop.
+- **Solution:** Increase the goal tolerances to give the robot a larger "success" radius.
+  - **File to edit:** `src/eagle_bot/config/nav2_params.yaml`
+  - **Parameters to change:**
+    ```yaml
+    # In the 'general_goal_checker' section
+    xy_goal_tolerance: 0.5  # meters
+    yaw_goal_tolerance: 0.5 # radians
 
-### Real drive
+    # In the 'FollowPath' (DWB) section
+    xy_goal_tolerance: 0.5  # meters
+    ```
+</details>
 
+---
 
-Use Existing SLAM and add the positioning system to it
-
-https://pdf.sciencedirectassets.com/313346/1-s2.0-S2405896322X00311/1-s2.0-S2405896322027495/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQC80ltVXrccoFrO18M23Fhqq3qPVo1Q1i9rHA2Q1R8GTAIgGhvuWc0c%2F4836lfMEio9GNSqwyV8KRSTUOGUarOdTtcqswUIHxAFGgwwNTkwMDM1NDY4NjUiDPrgrFaPTNf8DwFshCqQBUBd3zdRKEOz9YIlJpIRT1IF%2Bm9bKSGoBhCCwqJfpP1XZvmiC%2F6D3DcNg3vpzGSwu%2F5WNm2QM%2BbPW7GBFIgumTzN7VlyTyF0NkyOObINUfPUoIHFHlDMUvK98AIlfZnGkYJ7JCFTQ3gWloYBZ%2BaOTayzuj6EFswuVoBhRIMXZkwvyLD85zoKG2OJdb0T%2FnuKOVCQ28hS0yK1%2BrptlYu3lsE9D9axtWEDV6P2OkynxgLPsxVUqf9IFH9LFQegl8MKDISea1gMd%2F5%2Fh3GFb64kT5ufR8PosEfAcZc88HhAzrd9jgmVKCrbWhaLENorb4f2DxeT14T79EDzUOLVFDPh44HPnLHuf4DGT1nGzPC%2B5K9pTvmMoCcajoVD3wTmef43cgLWnc6wK%2FmmSxr7ya4paIzjDj%2F88gd5pbGNFQLeVin8YTHdeBuAQ4NXo8GCoylG%2FGGNk184LRgNBlRA9YyorZY5RV0uAmKfc3Y4ElnQEISz6rTlS5UYGMNyBTth0pTIXKakpRtgxRbOvm6ZNt9H0gVOUgYj74vmkVABF0prgFOMo2jZoXyaHNyBy47FEXNnR31mY7jsaeKtcjYwL6K6l5%2FWBgTrQ0d4u8uZ2vrHbPK8%2BOu7SUMqMuQnJgVFIeiEjbsIvgX4fLv0FZ805YaY8rarfH3%2B3M2G73CFif9hBxZZ%2BVEu7Ptzyy9%2B2i296BdSiNmtJefudd%2BV3DnFUSE8coGO7rWLuLz0pS%2BxCsPIHWg84jWXhoa2f9g7BoChycbjvbD6LAEb3YE4hdwlFE7HEY0U6kJ7Xd7tLrfy%2BzxpJjUv5M%2BWhOklTxu0VmdYY%2BrnrbOlpCH8ZXJGmtYQMByX4LoR5El%2BdLXWHx3JJw9Zl0P1MKmuqrkGOrEBFzAvzREDP06gP6QWAutKB9l%2FkOtEzlO5kOF7VN1Co3xkvabuwRga1ntjsmt%2FEZr2Y47YabLJaOsYNEqE6sqZ2NNKzrPJj8AJX2ylT5Iqf57JQTRlrQiT%2Fwmcsczw7IS5khJ%2BX8QOnTzrqXw88ma99wIuS3howofU%2BbdoC3aUFf%2BMbtwKIC%2FMnKThGsk9dJui9TJJxNEALhuPI6vVE39t2AzgOub%2FO66giKz1VRZq0bDK&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241105T225422Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTYUITMIFWM%2F20241105%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=94116b8b302956538133410e67df2cd93647cbdd600378ddea1e0dceb72d406c&hash=a0b5491fa25798f47a176be772c642d4ed5ce5af8fd6f8baf9da84d1d5eab194&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S2405896322027495&tid=spdf-715f823d-82f1-4abb-b6df-626c7379dcb8&sid=01dbadf11380a54ac7798c789008eacd25fcgxrqa&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=0f165f0b045052060a0258&rr=8de06cdb99f1b099&cc=us
-https://www.sciencedirect.com/science/article/pii/S2772941924000565
-https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10058595
-
-https://dev.intelrealsense.com/docs/compiling-librealsense-for-linux-ubuntu-guide?_ga=2.27613044.973360539.1731886892-166595236.1731886892
-https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html
-Ros manual robot control:
-
-
-
-https://index.ros.org/p/teleop_twist_keyboard/github-ros2-teleop_twist_keyboard/
-
+## 📚 Useful Resources
+- [ROS2 Documentation](https://docs.ros.org/en/galactic/index.html)
+- [Nav2 (Navigation2) Documentation](https://navigation.ros.org/)
+- [ros2_control Documentation](https://control.ros.org/master/index.html)
+- [Community Tutorials for `teleop_twist_keyboard`](https://index.ros.org/p/teleop_twist_keyboard/)

@@ -1,109 +1,64 @@
 """
-    This launch file is used to launch all the nodes required for the eagle bot.
-    The eagle bot is a differential drive robot with a rplidar and realsense camera.
-    The launch file will launch the following nodes:
-    1. rsp.launch.py: Launch the robot state publisher node
-    2. rplidar.launch.py: Launch the rplidar node
-    3. rs_launch.py: Launch the realsense camera node
-    4. ekf_filter_node: Launch the robot_localization ekf node
-    5. nav_launch.py: Launch the nav2 stack
-    6. twist_mux: Launch the twist_mux node
-    7. controller.launch.py: Launch the ros2_control nodes
-    8. TimerAction: Delay the launch of the nodes to allow the robot to be ready
-    
+This launch file serves as the main entry point for launching the core components of the Eagle Bot.
+
+It brings up the following main components:
+1. Robot State Publisher (rsp.launch.py): Publishes the robot's state (TF tree) based on its URDF.
+2. RPLIDAR (rplidar.launch.py): Launches the driver for the RPLIDAR sensor.
+3. Twist Mux: Multiplexes different velocity command topics into one.
+4. ROS2 Control (controller.launch.py): Launches the hardware controllers for the differential drive base.
+   This is launched after a short delay to ensure hardware is ready.
 """
 
 import os
+from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
-
-from launch.actions import DeclareLaunchArgument
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
+                            SetEnvironmentVariable, TimerAction)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from nav2_common.launch import HasNodeParams
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-import launch_ros
-import launch
-from launch.substitutions import LaunchConfiguration, PythonExpression
-from launch_ros.actions import LifecycleNode
-from launch_ros.actions import Node
-from launch.actions import SetEnvironmentVariable
-from pathlib import Path
-from launch.actions import TimerAction
-
+import launch_ros.substitutions
 
 def generate_launch_description():
-    """
-    Launch all the nodes required for the eagle bot
-    """
-    package_name = "eagle_bot"
-    arg = SetEnvironmentVariable("RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED", "1")
-    pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(
-        package_name
-    )
-    default_rviz_config_path = os.path.join(pkg_share, "config/nav2_default_view.rviz")
+    """Generates the launch description for the Eagle Bot."""
 
+    package_name = "eagle_bot"
+    pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(package_name)
+
+    # --- General Arguments and Configurations ---
+
+    # Set environment variable for unbuffered console output
+    SetEnvironmentVariable("RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED", "1")
+
+    # Declare launch arguments
+    default_rviz_config_path = os.path.join(pkg_share, "config/nav2_default_view.rviz")
+    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
+
+    # --- Node and Launch File Definitions ---
+
+    # 1. Robot State Publisher
+    # Publishes the TF transformations for the robot based on the URDF model.
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory(package_name), "launch", "rsp.launch.py"
-                )
-            ]
+            os.path.join(get_package_share_directory(package_name), "launch", "rsp.launch.py")
         ),
-        launch_arguments={"use_sim_time": "true", "use_ros2_control": "true"}.items(),
+        launch_arguments={"use_sim_time": use_sim_time, "use_ros2_control": "true"}.items(),
     )
 
+    # 2. RPLIDAR Driver
+    # Launches the node for the RPLIDAR laser scanner.
     rplidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory(package_name),
-                    "launch",
-                    "rplidar.launch.py",
-                )
-            ]
-        ),
+            os.path.join(get_package_share_directory(package_name), "launch", "rplidar.launch.py")
+        )
     )
 
-    rs_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory("realsense2_camera"),
-                    "launch",
-                    "rs_launch.py",
-                )
-            ]
-        ),
-        launch_arguments={"pointcloud.enable": "true", "align_depth": "true"}.items(),
-    )
-
-    robot_localization_node = launch_ros.actions.Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[
-            os.path.join(pkg_share, "config/ekf.yaml"),
-            {"use_sim_time": LaunchConfiguration("use_sim_time")},
-        ],
-    )
-
-    launch_nav = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory(package_name), "launch", "nav_launch.py"
-                )
-            ]
-        ),
-    )
-
-    twist_mux_params = os.path.join(
-        get_package_share_directory(package_name), "config", "twist_mux.yaml"
-    )
+    # 3. Twist Mux (Velocity Command Multiplexer)
+    # This node takes velocity commands from multiple sources (e.g., teleop, nav2)
+    # and arbitrates between them, sending a single command to the robot controller.
+    twist_mux_params = os.path.join(pkg_share, "config", "twist_mux.yaml")
     twist_mux = Node(
         package="twist_mux",
         executable="twist_mux",
@@ -111,46 +66,45 @@ def generate_launch_description():
         remappings=[("/cmd_vel_out", "/diff_controller/cmd_vel_unstamped")],
     )
 
+    # 4. ROS2 Control for Hardware
+    # Launches the differential drive controller and joint state broadcaster.
     ros2control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory("eagle_bot"),
-                    "launch",
-                    "controller.launch.py",
-                )
-            ]
-        ),
+            os.path.join(get_package_share_directory("eagle_bot"), "launch", "controller.launch.py")
+        )
     )
 
+    # --- Delayed Launch ---
+    # The TimerAction introduces a delay before launching certain nodes.
+    # This is often necessary to give hardware interfaces time to initialize properly.
     delay_action = TimerAction(
-        period=3.5,  # Adjust the delay time as needed (e.g., 5 seconds)
+        period=3.5,
         actions=[
-            # robot_localization_node,
-            # launch_nav,
-            # params_declare,
             ros2control_launch,
-            # driver_node,
-            # xsens_mti_node,
-        ],  # Specify the action(s) to execute after the delay
+        ],
     )
-    # Launch them all!
+
+    # --- LaunchDescription Assembly ---
+    # Assemble all the components into the final launch description.
     return LaunchDescription(
         [
-            launch.actions.DeclareLaunchArgument(
-                name="rvizconfig",
+            DeclareLaunchArgument(
+                "rvizconfig",
                 default_value=default_rviz_config_path,
-                description="Absolute path to rviz config file",
+                description="Absolute path to RViz config file",
             ),
-            launch.actions.DeclareLaunchArgument(
-                name="use_sim_time",
+            DeclareLaunchArgument(
+                "use_sim_time",
                 default_value="false",
                 description="Flag to enable use_sim_time",
             ),
+
+            # Launch core components
             rsp,
             rplidar_launch,
-            # rs_launch,
             twist_mux,
+
+            # Launch delayed components
             delay_action,
         ]
     )
