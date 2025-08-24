@@ -1,3 +1,134 @@
+iv-lab@ivlab-orin:~/green_robot$ colcon build --symlink-install
+[0.453s] WARNING:colcon.colcon_core.package_selection:Some selected packages are already built in one or more underlay workspaces:
+        'realsense2_camera' is in: /opt/ros/humble
+If a package in a merged underlay workspace is overridden and it installs headers, then all packages in the overlay must sort their include directories by workspace order. Failure to do so may result in build failures or undefined behavior at run time.
+If the overridden package is used by another package in any underlay, then the overriding package in the overlay must be API and ABI compatible or undefined behavior at run time may occur.
+
+If you understand the risks and want to override a package anyways, add the following to the command line:
+        --allow-overriding realsense2_camera
+
+This may be promoted to an error in a future release of colcon-override-check.
+Starting >>> realsense2_camera_msgs
+Starting >>> diff_controller
+Starting >>> eagle_bot
+Starting >>> sllidar_ros2
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/dist.py:599: SetuptoolsDeprecationWarning: Invalid dash-separated key 'script-dir' in 'develop' (setup.cfg), please use the underscore name 'script_dir' instead.
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'script-dir' will not be supported in future
+        versions. Please use the underscore name 'script_dir' instead.
+
+        By 2026-Mar-03, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self._enforce_underscore(opt, section)
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/dist.py:599: SetuptoolsDeprecationWarning: Invalid dash-separated key 'install-scripts' in 'install' (setup.cfg), please use the underscore name 'install_scripts' instead.
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'install-scripts' will not be supported in future
+        versions. Please use the underscore name 'install_scripts' instead.
+
+        By 2026-Mar-03, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self._enforce_underscore(opt, section)
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'tests_require'
+  warnings.warn(msg)
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/dist.py:599: SetuptoolsDeprecationWarning: Invalid dash-separated key 'script-dir' in 'develop' (setup.cfg), please use the underscore name 'script_dir' instead.
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'script-dir' will not be supported in future
+        versions. Please use the underscore name 'script_dir' instead.
+        (Affected: eagle_bot).
+
+        By 2026-Mar-03, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self._enforce_underscore(opt, section)
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/dist.py:599: SetuptoolsDeprecationWarning: Invalid dash-separated key 'install-scripts' in 'install' (setup.cfg), please use the underscore name 'install_scripts' instead.
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'install-scripts' will not be supported in future
+        versions. Please use the underscore name 'install_scripts' instead.
+        (Affected: eagle_bot).
+
+        By 2026-Mar-03, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self._enforce_underscore(opt, section)
+--- stderr: eagle_bot                                                                                                                                
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/dist.py:599: SetuptoolsDeprecationWarning: Invalid dash-separated key 'script-dir' in 'develop' (setup.cfg), please use the underscore name 'script_dir' instead.
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'script-dir' will not be supported in future
+        versions. Please use the underscore name 'script_dir' instead.
+
+        By 2026-Mar-03, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self._enforce_underscore(opt, section)
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'tests_require'
+  warnings.warn(msg)
+/home/iv-lab/.local/lib/python3.10/site-packages/setuptools/dist.py:599: SetuptoolsDeprecationWarning: Invalid dash-separated key 'script-dir' in 'develop' (setup.cfg), please use the underscore name 'script_dir' instead.
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'script-dir' will not be supported in future
+        versions. Please use the underscore name 'script_dir' instead.
+        (Affected: eagle_bot).
+
+        By 2026-Mar-03, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self._enforce_underscore(opt, section)
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: setup.py --help [cmd1 cmd2 ...]
+   or: setup.py --help-commands
+   or: setup.py cmd --help
+
+error: option --editable not recognized
+---
+Failed   <<< eagle_bot [2.17s, exited with code 1]
+Aborted  <<< diff_controller [2.98s]                                                                                                         
+Aborted  <<< sllidar_ros2 [3.66s]                                                                             
+Aborted  <<< realsense2_camera_msgs [4.25s]                           
+
+Summary: 0 packages finished [4.55s]
+  1 package failed: eagle_bot
+  3 packages aborted: diff_controller realsense2_camera_msgs sllidar_ros2
+  1 package had stderr output: eagle_bot
+  2 packages not processed
+
+
 # green_robot
 Installing pip packages: `pip3 install -r requirements.txt`
 ## To Do
