@@ -8,3 +8,5 @@ install/
 
 # Ignore log directory
 log/
+
+.vscode/
