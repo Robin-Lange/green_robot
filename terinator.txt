@@ -13,7 +13,7 @@
 #    ./setup_terminator.sh
 
 # Source ROS 2 setup automatic otherwise
-#source /opt/ros/galactic/setup.bash
+#source /opt/ros/humble/setup.bash
 
 # Build the workspace
 colcon build --symlink-install
