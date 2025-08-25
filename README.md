@@ -49,6 +49,32 @@ Refer to the documentation for your specific hardware (e.g., RPLIDAR, Arduino/mi
 <details>
 <summary><strong>Example: RPLIDAR udev Rule</strong></summary>
 
+  https://github.com/Slamtec/rplidar_ros/tree/ros2
+Create udev rules for rplidar
+
+rplidar_ros running requires the read and write permissions of the serial device. You can manually modify it with the following command:
+
+sudo chmod 777 /dev/ttyUSB0
+But a better way is to create a udev rule:
+
+cd src/rpldiar_ros/
+source scripts/create_udev_rules.sh
+
+  
+  `sudo nano /etc/udev/rules.d/99-arduino.rules`
+Add the following rule (adjust VID and PID as necessary):
+`SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", MODE="0666", SYMLINK+="arduino_mega"`
+
+SUBSYSTEM=="tty": Matches USB serial devices.
+ATTRS{idVendor} and ATTRS{idProduct}: Match the VID and PID of your Arduino Mega.
+MODE="0666": Grants read/write access to all users.
+SYMLINK+="arduino_mega": Creates a user-friendly symlink (/dev/arduino_mega).
+Step 3: Apply the udev Rule
+Reload udev rules:
+
+`sudo udevadm control --reload-rules`
+Unplug and replug your Arduino Mega to apply the new rule."
+
 1.  Create a new rules file: `sudo nano /etc/udev/rules.d/99-rplidar.rules`
 2.  Add the following line (replace `2c42` if your vendor ID is different):
     ```
