@@ -35,6 +35,8 @@ This project requires ROS2 (Humble recommended) and a few other system packages.
 ./install_dependencies.sh
 ```
 
+testing lidar
+`ros2 launch sllidar_ros2 view_sllidar_s2_launch.py`
 <details>
 <summary><strong>Manual Dependency Installation</strong></summary>
 

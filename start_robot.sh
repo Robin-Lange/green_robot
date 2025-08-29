@@ -53,7 +53,7 @@ case $choice in
 
         # Terminal 3: A dedicated terminal for saving the map once exploration is complete.
         # The 'read' command pauses the script, waiting for the user to press Enter in this terminal.
-        gnome-terminal --title="Save Map" -- bash -c "source install/setup.bash; echo 'Drive the robot around to build the map.'; echo 'When you are ready, press Enter in THIS terminal to save the map.'; read; ros2 run nav2_map_server map_saver_cli -f ~/map; echo 'Map saved to ~/map.pgm and ~/map.yaml'; exec bash"
+        gnome-terminal --title="Save Map" -- bash -c "source install/setup.bash; echo 'Drive the robot around to build the map.'; echo 'When you are ready, press Enter in THIS terminal to save the map.'; read; ros2 run nav2_map_server map_saver_cli -f ~/map; echo 'Map saved to ~/map.pgm and ~/map.yaml'; read"
         ;;
     *)
         echo "Invalid choice. Please run the script again and select a valid option."
