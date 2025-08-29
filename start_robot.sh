@@ -7,11 +7,11 @@ echo "Sourcing the workspace and launching core systems..."
 
 # Open a new terminal with the workspace sourced. This is for user convenience for manual commands.
 # The 'exec bash' command at the end keeps the terminal window open after the initial command completes.
-gnome-terminal --title="Workspace Sourced" -- bash -c "echo 'This terminal has the workspace sourced. You can use it for manual commands.'; exec bash"
+gnome-terminal --title="Workspace Sourced" -- bash -c "source install/setup.bash; echo 'This terminal has the workspace sourced. You can use it for manual commands.'; exec bash"
 
 # Launch the main robot communication stack in a new terminal.
 # Each terminal that runs ROS2 commands must source the workspace first.
-gnome-terminal --title="Eagle Bot Launch" -- bash -c "source install/setup.bash; ros2 launch eagle_bot eagle.launch.py; exec bash"
+gnome-terminal --title="Eagle Bot Launch" -- bash -c "source install/setup.bash; ros2 launch eagle_bot eagle.launch.py; read"
 
 echo "Waiting for 3 seconds for core systems to initialize..."
 sleep 3
@@ -34,22 +34,22 @@ case $choice in
         echo "Starting Manual Control..."
         # Launch the teleop node for keyboard control.
         # The command remaps the /cmd_vel topic to the one expected by the differential drive controller.
-        gnome-terminal --title="Manual Control" -- bash -c "source install/setup.bash; ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped; exec bash"
+        gnome-terminal --title="Manual Control" -- bash -c "source install/setup.bash; ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped; read"
         ;;
     2)
         echo "Starting Autonomous Navigation..."
         # Launch the autonomous navigation system, which includes localization (AMCL) and Nav2.
-        gnome-terminal --title="Autonomous Navigation" -- bash -c "source install/setup.bash; ros2 launch eagle_bot localization_nav.launch.py; exec bash"
+        gnome-terminal --title="Autonomous Navigation" -- bash -c "source install/setup.bash; ros2 launch eagle_bot localization_nav.launch.py; read"
         ;;
     3)
         echo "Starting Mapping mode..."
         # Launch all nodes required for creating a new map.
 
         # Terminal 1: Manual control for driving the robot around the new area.
-        gnome-terminal --title="Manual Control (Mapping)" -- bash -c "source install/setup.bash; ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped; exec bash"
+        gnome-terminal --title="Manual Control (Mapping)" -- bash -c "source install/setup.bash; ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_controller/cmd_vel_unstamped; read"
 
         # Terminal 2: The mapping process itself (SLAM).
-        gnome-terminal --title="Create Map (SLAM)" -- bash -c "source install/setup.bash; ros2 launch eagle_bot nav_launch.py; exec bash"
+        gnome-terminal --title="Create Map (SLAM)" -- bash -c "source install/setup.bash; ros2 launch eagle_bot nav_launch.py; read"
 
         # Terminal 3: A dedicated terminal for saving the map once exploration is complete.
         # The 'read' command pauses the script, waiting for the user to press Enter in this terminal.

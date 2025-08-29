@@ -63,7 +63,7 @@ Compile the ROS2 packages using `colcon`.
 
 ```bash
 # From the root of the repository (the 'green_robot' folder)
-colcon build --symlink-install
+colcon build
 ```
 
 ---
