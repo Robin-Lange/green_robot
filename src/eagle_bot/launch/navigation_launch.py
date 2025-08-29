@@ -23,7 +23,7 @@ def generate_launch_description():
     lifecycle_nodes = [
         "controller_server",
         "planner_server",
-        "behaviors_server",
+        "behavior_server",
         "bt_navigator",
         "waypoint_follower",
     ]
@@ -104,8 +104,8 @@ def generate_launch_description():
             ),
             Node(
                 package="nav2_behaviors",
-                executable="behaviors_server",
-                name="behaviors_server",
+                executable="behavior_server",
+                name="behavior_server",
                 output="screen",
                 parameters=[configured_params],
                 remappings=remappings,
