@@ -1,3 +1,10 @@
+"""
+This launch file is used for testing the EKF (Extended Kalman Filter) node.
+
+It launches the necessary components to test the robot's localization, including
+the robot state publisher, the EKF node from the `robot_localization` package,
+and the IMU driver.
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -18,6 +25,15 @@ from pathlib import Path
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for testing the EKF node.
+
+    This function sets up and launches the robot state publisher, the EKF node,
+    and the IMU driver, allowing for isolated testing of the localization system.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     package_name = "eagle_bot"
     arg = SetEnvironmentVariable("RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED", "1")
     pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(

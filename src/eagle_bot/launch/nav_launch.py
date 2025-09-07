@@ -1,3 +1,10 @@
+"""
+This launch file is used to launch the navigation stack with SLAM.
+
+It starts the `slam_toolbox` for simultaneous localization and mapping, allowing the
+robot to build a map while navigating. It also includes the main Nav2 launch file
+and starts RViz for visualization.
+"""
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -12,6 +19,16 @@ import launch_ros
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for navigation with SLAM.
+
+    This function sets up and launches the `slam_toolbox` node, the Nav2 stack,
+    and RViz. It is intended for use in environments where a map is not yet
+    available.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     package_name = "eagle_bot"
     pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(
         package_name

@@ -1,34 +1,43 @@
-# Eagle Bot ROS2 Workspace
+# Eagle Bot ROS 2 Workspace
 
-This repository contains the ROS2 workspace for the Eagle Bot, a differential drive robot designed for indoor warehouse environments.
+This repository contains the ROS 2 workspace for the Eagle Bot, a differential drive robot designed for indoor warehouse environments.
 
 ## Overview
 
-The goal of this project is to provide a fully autonomous mobile robot platform. It uses a differential drive base, is controlled via ROS2, and uses a LIDAR for SLAM (Simultaneous Localization and Mapping) and navigation.
+The goal of this project is to provide a fully autonomous mobile robot platform. It uses a differential drive base, is controlled via ROS 2, and uses a LIDAR for SLAM (Simultaneous Localization and Mapping) and navigation.
 
 ### Key Features
-- **ROS2-based:** Utilizes the modern ROS2 framework.
+- **ROS 2-based:** Utilizes the modern ROS 2 framework for robust and flexible robotics applications.
+- **Comprehensive Documentation:** The entire codebase is thoroughly documented, providing clear explanations for all functions, classes, and parameters.
 - **Interactive Startup:** A single script (`start_robot.sh`) to launch all necessary nodes with a user-friendly menu.
 - **Navigation Ready:** Comes with configurations for the Nav2 stack, including modes for mapping, localization, and autonomous navigation.
+- **Simulation and Hardware:** Supports both Gazebo simulation and physical hardware deployment.
 - **Tunable:** Key parameters for motor control and navigation are exposed in YAML files for easy tuning.
 
 ---
 
 ## Repository Structure
 
-A brief overview of the most important directories:
-- **/src/eagle_bot:** The main package for the robot.
-  - **/launch:** Contains all the ROS2 launch files.
-  - **/config:** Holds all the configuration files (Nav2, controllers, etc.).
-- **/src/diff_controller:** The `ros2_control` hardware interface for the differential drive base.
-- **/start_robot.sh:** The main script to run the robot.
+The workspace is organized into several ROS 2 packages located in the `src/` directory:
+
+- **/src/eagle_bot:** The main package for the robot's high-level logic and configuration.
+  - **/launch:** Contains all the ROS 2 launch files for starting various parts of the system, from individual sensors to the full navigation stack.
+  - **/config:** Holds all the configuration files, including parameters for Nav2, controllers, and sensor settings.
+  - **/eagle_bot:** Contains the Python nodes for various functionalities like odometry publishing, video saving, and command relaying.
+  - **/description:** Contains the robot's URDF and xacro files, which define its physical structure and sensor placement.
+
+- **/src/diff_controller:** The `ros2_control` hardware interface for the differential drive base. This package provides the bridge between the high-level ROS 2 controllers and the low-level motor control hardware (e.g., an Arduino).
+
+- **/src/sllidar_ros2:** A ROS 2 package for the SLAMTEC RPLIDAR series of sensors. This is a third-party package included for convenience.
+
+- **/start_robot.sh:** The main script to run the robot, providing an interactive menu for different operational modes.
 
 ---
 
 ## 💻 Installation & Setup
 
 ### 1. Dependencies
-This project requires ROS2 (Humble recommended) and a few other system packages. An installation script is provided to simplify this process.
+This project requires ROS 2 (Humble recommended) and a few other system packages. An installation script is provided to simplify this process.
 
 ```bash
 # Run the dependency installer
@@ -59,7 +68,7 @@ Refer to the documentation for your specific hardware (e.g., RPLIDAR, Arduino/mi
 </details>
 
 ### 3. Build the Workspace
-Compile the ROS2 packages using `colcon`.
+Compile the ROS 2 packages using `colcon`.
 
 ```bash
 # From the root of the repository (the 'green_robot' folder)
@@ -83,6 +92,17 @@ The script will present a menu with three options:
 1.  **Manual Control:** For driving the robot with the keyboard.
 2.  **Autonomous Navigation:** For navigating in a known, pre-mapped area.
 3.  **Mapping:** For creating a new map of an unknown area using SLAM.
+
+---
+
+## 📖 Codebase Documentation
+
+The codebase is documented using standard conventions for each language:
+- **Python:** Google Style Python Docstrings
+- **C++:** Doxygen-style comments
+- **Launch Files:** Docstrings explaining the purpose of each launch file.
+
+Developers are encouraged to read the docstrings in the source files to understand the implementation details of each node and class.
 
 ---
 
@@ -122,7 +142,7 @@ The script will present a menu with three options:
 ---
 
 ## 📚 Useful Resources
-- [ROS2 Documentation](https://docs.ros.org/en/humble/index.html)
+- [ROS 2 Documentation](https://docs.ros.org/en/humble/index.html)
 - [Nav2 (Navigation2) Documentation](https://navigation.ros.org/)
 - [ros2_control Documentation](https://control.ros.org/master/index.html)
 - [Community Tutorials for `teleop_twist_keyboard`](https://index.ros.org/p/teleop_twist_keyboard/)

@@ -1,3 +1,10 @@
+"""
+This launch file is responsible for launching the localization system.
+
+It starts the map server to load a pre-existing map, the AMCL node for localization,
+and a lifecycle manager to handle the state transitions of these nodes. This is a
+key part of the Nav2 stack.
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -10,6 +17,16 @@ from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the localization system.
+
+    This function sets up and launches the map server, AMCL, and the lifecycle
+    manager. It allows for a dynamic configuration of the map file, namespace,
+    and other parameters.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     # Get the launch directory
     bringup_dir = get_package_share_directory("eagle_bot")
 

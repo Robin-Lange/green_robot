@@ -1,3 +1,10 @@
+"""
+This launch file is responsible for starting the ros2_control controllers.
+
+It launches the controller manager and spawns the necessary controllers for a
+differential drive robot, including the differential drive controller and the
+joint state broadcaster.
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -16,6 +23,16 @@ package_name = "eagle_bot"
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the robot controllers.
+
+    This function sets up and launches the controller manager and the spawner
+    nodes for the differential drive controller and the joint state broadcaster.
+    It also includes the robot state publisher launch file.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     robot_description = Command(
         ["ros2 param get --hide-type /robot_state_publisher robot_description"]
     )

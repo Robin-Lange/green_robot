@@ -1,16 +1,16 @@
 """
-    This launch file is used to launch all the nodes required for the eagle bot.
-    The eagle bot is a differential drive robot with a rplidar and realsense camera.
-    The launch file will launch the following nodes:
-    1. rsp.launch.py: Launch the robot state publisher node
-    2. rplidar.launch.py: Launch the rplidar node
-    3. rs_launch.py: Launch the realsense camera node
-    4. ekf_filter_node: Launch the robot_localization ekf node
-    5. nav_launch.py: Launch the nav2 stack
-    6. twist_mux: Launch the twist_mux node
-    7. controller.launch.py: Launch the ros2_control nodes
-    8. TimerAction: Delay the launch of the nodes to allow the robot to be ready
-    
+This launch file is used to launch all the nodes required for the eagle bot.
+
+The eagle bot is a differential drive robot with a rplidar and realsense camera.
+The launch file will launch the following nodes:
+1. rsp.launch.py: Launch the robot state publisher node
+2. rplidar.launch.py: Launch the rplidar node
+3. rs_launch.py: Launch the realsense camera node
+4. ekf_filter_node: Launch the robot_localization ekf node
+5. nav_launch.py: Launch the nav2 stack
+6. twist_mux: Launch the twist_mux node
+7. controller.launch.py: Launch the ros2_control nodes
+8. TimerAction: Delay the launch of the nodes to allow the robot to be ready
 """
 
 import os
@@ -35,7 +35,14 @@ from launch.actions import TimerAction
 
 def generate_launch_description():
     """
-    Launch all the nodes required for the eagle bot
+    Generates the launch description for the entire Eagle Bot system.
+
+    This function aggregates all the necessary launch files and nodes to run the
+    robot, including the robot state publisher, sensors, localization, navigation,
+    and controllers.
+
+    Returns:
+        LaunchDescription: The launch description object.
     """
     package_name = "eagle_bot"
     arg = SetEnvironmentVariable("RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED", "1")

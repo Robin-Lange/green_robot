@@ -1,3 +1,10 @@
+"""
+This launch file is used to launch both the localization and navigation stacks.
+
+It serves as a top-level launch file to bring up the entire navigation system,
+including localization (AMCL and map server), the Nav2 planner and controller
+servers, and RViz for visualization.
+"""
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -12,6 +19,15 @@ import launch_ros
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the combined localization and navigation system.
+
+    This function includes the individual launch files for localization and navigation,
+    and also starts RViz with a default configuration.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     package_name = "eagle_bot"
     pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(
         package_name

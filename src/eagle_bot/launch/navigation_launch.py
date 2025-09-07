@@ -1,3 +1,10 @@
+"""
+This launch file is responsible for launching the core Nav2 stack.
+
+It brings up the main Nav2 servers, including the controller, planner, behavior
+server, and BT navigator. It is a highly configurable launch file that allows
+for setting various parameters and behavior trees.
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -10,6 +17,16 @@ from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the Nav2 stack.
+
+    This function sets up and launches the core components of Nav2, including
+    the controller server, planner server, behavior server, BT navigator, and
+    waypoint follower. It also manages their lifecycles.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     # Get the launch directory
     bringup_dir = get_package_share_directory("eagle_bot")
 

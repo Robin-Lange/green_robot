@@ -1,3 +1,9 @@
+"""
+This launch file is used to start the sllidar_ros2 node for the RPLidar sensor.
+
+It allows for the configuration of the lidar's parameters, such as the serial port,
+baud rate, and frame ID, through launch arguments.
+"""
 #!/usr/bin/env python3
 
 import os
@@ -11,6 +17,15 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the RPLidar node.
+
+    This function sets up and launches the `sllidar_node` with the specified
+    parameters.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     channel_type = LaunchConfiguration("channel_type", default="serial")
     serial_port = LaunchConfiguration("serial_port", default="/dev/ttyUSB0")
     serial_baudrate = LaunchConfiguration(

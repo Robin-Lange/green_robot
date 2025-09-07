@@ -1,12 +1,35 @@
+"""
+This script contains a ROS 2 node for calculating and printing wheel velocities.
+
+It subscribes to `dynamic_joint_states` and `/diff_controller/cmd_vel_unstamped` topics
+to compute the linear velocities of the left and right wheels of a differential
+drive robot. The calculated velocities are then printed to the console.
+"""
 import rclpy
 from rclpy.node import Node
 from control_msgs.msg import DynamicJointState
 from geometry_msgs.msg import Twist
 from math import sin, cos, isnan
 import math
+
 class WheelVelocitiesCalculator(Node):
+    """
+    A ROS 2 node to calculate and display wheel velocities.
+
+    This class subscribes to joint state and command velocity topics to calculate
+    the linear velocities of the wheels. It is primarily used for debugging and
+    data analysis.
+
+    Attributes:
+        subscription_dynamic_joint_states: Subscription to the dynamic joint states.
+        subscription_cmd_vel: Subscription to the command velocity topic.
+        left_wheel_radius (float): The radius of the left wheel in meters.
+        right_wheel_radius (float): The radius of the right wheel in meters.
+        wheelbase (float): The distance between the wheels in meters.
+    """
 
     def __init__(self):
+        """Initializes the WheelVelocitiesCalculator node."""
         super().__init__('your_node_name')
         self.subscription_dynamic_joint_states = self.create_subscription(
             DynamicJointState,
@@ -24,6 +47,15 @@ class WheelVelocitiesCalculator(Node):
         self.wheelbase = 0.2  # Replace with your robot's wheelbase (distance between the wheels, in meters)
 
     def dynamic_joint_states_callback(self, msg):
+        """
+        Callback for the dynamic_joint_states topic.
+
+        This method calculates the linear velocity of each wheel based on the
+        received joint state messages.
+
+        Args:
+            msg (control_msgs.msg.DynamicJointState): The incoming joint state message.
+        """
         left_wheel_velocity = 0.0
         right_wheel_velocity = 0.0
 
@@ -44,6 +76,15 @@ class WheelVelocitiesCalculator(Node):
         print(f'|{left_wheel_velocity:.3f}|{left_wheel_velocity:.3f}|{right_wheel_velocity:.3f}|{right_wheel_velocity:.3f}|')
 
     def cmd_vel_callback(self, msg):
+        """
+        Callback for the cmd_vel topic.
+
+        This method calculates the expected wheel velocities based on the inverse
+        kinematics of a differential drive robot.
+
+        Args:
+            msg (geometry_msgs.msg.Twist): The incoming command velocity message.
+        """
         if math.isnan(msg.linear.x) or math.isnan(msg.angular.z):
             left_wheel_velocity = 0.0
             right_wheel_velocity = 0.0
@@ -57,6 +98,15 @@ class WheelVelocitiesCalculator(Node):
         print(f'|{left_wheel_velocity:.3f}|0|{right_wheel_velocity:.3f}|0|')
 
 def main(args=None):
+    """
+    The main function to run the WheelVelocitiesCalculator node.
+
+    Initializes rclpy, creates an instance of WheelVelocitiesCalculator, and spins
+    the node until it's shut down.
+
+    Args:
+        args: Command-line arguments.
+    """
     rclpy.init(args=args)
     wheel_velocities_calculator = WheelVelocitiesCalculator()
     rclpy.spin(wheel_velocities_calculator)

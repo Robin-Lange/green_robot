@@ -1,3 +1,10 @@
+"""
+This launch file is responsible for launching the robot_state_publisher.
+
+It processes the robot's URDF (xacro) file and starts the robot_state_publisher
+node, which is responsible for publishing the robot's state (tf tree) based on
+the joint states.
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -11,6 +18,15 @@ import xacro
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the robot_state_publisher.
+
+    This function processes the robot's URDF file and launches the
+    robot_state_publisher node.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
 
     # Check if we're told to use sim time
     use_sim_time = LaunchConfiguration("use_sim_time")

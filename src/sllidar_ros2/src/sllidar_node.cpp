@@ -50,20 +50,33 @@
 
 using namespace sl;
 
+/// A flag to indicate if the node should exit.
 bool need_exit = false;
 
+/**
+ * @class SLlidarNode
+ * @brief The ROS 2 node for the SLLidar sensor.
+ *
+ * This class encapsulates the functionality of the SLLidar ROS 2 node. It handles
+ * parameter parsing, communication with the lidar driver, and publishing LaserScan
+ * messages.
+ */
 class SLlidarNode : public rclcpp::Node
 {
   public:
+    /**
+     * @brief Constructor for the SLlidarNode.
+     */
     SLlidarNode()
     : Node("sllidar_node")
     {
-
       scan_pub = this->create_publisher<sensor_msgs::msg::LaserScan>("scan", rclcpp::QoS(rclcpp::KeepLast(10)));
-      
     }
 
-  private:    
+  private:
+    /**
+     * @brief Initializes the node's parameters.
+     */
     void init_param()
     {
         this->declare_parameter<std::string>("channel_type","serial");
@@ -96,6 +109,11 @@ class SLlidarNode : public rclcpp::Node
             this->get_parameter_or<float>("scan_frequency", scan_frequency, 10.0);
     }
 
+    /**
+     * @brief Gets the device info from the lidar.
+     * @param drv The lidar driver instance.
+     * @return True if successful, false otherwise.
+     */
     bool getSLLIDARDeviceInfo(ILidarDriver * drv)
     {
         sl_result     op_result;
@@ -122,6 +140,11 @@ class SLlidarNode : public rclcpp::Node
         return true;
     }
 
+    /**
+     * @brief Checks the health of the lidar.
+     * @param drv The lidar driver instance.
+     * @return True if the lidar is healthy, false otherwise.
+     */
     bool checkSLLIDARHealth(ILidarDriver * drv)
     {
         sl_result     op_result;
@@ -150,6 +173,12 @@ class SLlidarNode : public rclcpp::Node
         }
     }
 
+    /**
+     * @brief Service callback to stop the lidar motor.
+     * @param req The service request.
+     * @param res The service response.
+     * @return True if successful, false otherwise.
+     */
     bool stop_motor(const std::shared_ptr<std_srvs::srv::Empty::Request> req,
                     std::shared_ptr<std_srvs::srv::Empty::Response> res)
     {
@@ -164,6 +193,12 @@ class SLlidarNode : public rclcpp::Node
         return true;
     }
 
+    /**
+     * @brief Service callback to start the lidar motor.
+     * @param req The service request.
+     * @param res The service response.
+     * @return True if successful, false otherwise.
+     */
     bool start_motor(const std::shared_ptr<std_srvs::srv::Empty::Request> req,
                     std::shared_ptr<std_srvs::srv::Empty::Response> res)
     {
@@ -193,11 +228,19 @@ class SLlidarNode : public rclcpp::Node
         return true;
     }
 
-    static float getAngle(const sl_lidar_response_measurement_node_hq_t& node)
-    {
-        return node.angle_z_q14 * 90.f / 16384.f;
-    }
-
+    /**
+     * @brief Publishes a LaserScan message.
+     * @param pub The publisher to use.
+     * @param nodes The array of measurement nodes.
+     * @param node_count The number of measurement nodes.
+     * @param start The start time of the scan.
+     * @param scan_time The duration of the scan.
+     * @param inverted Whether the scan data is inverted.
+     * @param angle_min The minimum angle of the scan.
+     * @param angle_max The maximum angle of the scan.
+     * @param max_distance The maximum range of the scan.
+     * @param frame_id The frame ID of the scan.
+     */
     void publish_scan(rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr& pub,
                   sl_lidar_response_measurement_node_hq_t *nodes,
                   size_t node_count, rclcpp::Time start,
@@ -253,7 +296,11 @@ class SLlidarNode : public rclcpp::Node
 
         pub->publish(*scan_msg);
     }
-public:    
+public:
+    /**
+     * @brief The main work loop of the node.
+     * @return 0 on success, -1 on failure.
+     */
     int work_loop()
     {        
         init_param();
@@ -442,35 +489,54 @@ public:
 
 
   private:
-    rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub;
-    rclcpp::Service<std_srvs::srv::Empty>::SharedPtr start_motor_service;
-    rclcpp::Service<std_srvs::srv::Empty>::SharedPtr stop_motor_service;
+    rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub; ///< Publisher for the LaserScan messages.
+    rclcpp::Service<std_srvs::srv::Empty>::SharedPtr start_motor_service; ///< Service to start the motor.
+    rclcpp::Service<std_srvs::srv::Empty>::SharedPtr stop_motor_service;  ///< Service to stop the motor.
 
-    std::string channel_type;
-    std::string tcp_ip;
-    std::string udp_ip;
-    std::string serial_port;
-    int tcp_port = 20108;
-    int udp_port = 8089;
-    int serial_baudrate = 115200;
-    std::string frame_id;
-    bool inverted = false;
-    bool angle_compensate = true;
-    float max_distance = 8.0;
-    size_t angle_compensate_multiple = 1;//it stand of angle compensate at per 1 degree
-    std::string scan_mode;
-    float scan_frequency;
+    std::string channel_type;       ///< The communication channel type (serial, tcp, or udp).
+    std::string tcp_ip;             ///< The IP address for TCP communication.
+    std::string udp_ip;             ///< The IP address for UDP communication.
+    std::string serial_port;        ///< The serial port for communication.
+    int tcp_port = 20108;           ///< The TCP port for communication.
+    int udp_port = 8089;            ///< The UDP port for communication.
+    int serial_baudrate = 115200;   ///< The baud rate for serial communication.
+    std::string frame_id;           ///< The frame ID for the laser scan.
+    bool inverted = false;          ///< Whether to invert the scan data.
+    bool angle_compensate = true;   ///< Whether to enable angle compensation.
+    float max_distance = 8.0;       ///< The maximum range of the lidar.
+    size_t angle_compensate_multiple = 1; ///< The multiple for angle compensation.
+    std::string scan_mode;          ///< The scan mode of the lidar.
+    float scan_frequency;           ///< The scan frequency of the lidar.
 
-    ILidarDriver * drv;    
+    ILidarDriver * drv;             ///< The lidar driver instance.
 };
 
+/**
+ * @brief Gets the angle from a measurement node.
+ * @param node The measurement node.
+ * @return The angle in degrees.
+ */
+static float getAngle(const sl_lidar_response_measurement_node_hq_t& node)
+{
+    return node.angle_z_q14 * 90.f / 16384.f;
+}
+
+/**
+ * @brief Signal handler for Ctrl-C.
+ * @param sig The signal number.
+ */
 void ExitHandler(int sig)
 {
     (void)sig;
     need_exit = true;
 }
 
-
+/**
+ * @brief The main function for the sllidar_node.
+ * @param argc The number of command-line arguments.
+ * @param argv The command-line arguments.
+ * @return 0 on success, -1 on failure.
+ */
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);  
@@ -480,4 +546,3 @@ int main(int argc, char * argv[])
   rclcpp::shutdown();
   return ret;
 }
-

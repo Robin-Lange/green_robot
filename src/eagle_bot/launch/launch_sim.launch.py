@@ -1,3 +1,9 @@
+"""
+This launch file is used to start the Gazebo simulation environment.
+
+It launches the Gazebo server and GUI, loads a specified world file, and spawns
+the robot model into the simulation. It also includes the robot state publisher.
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -14,6 +20,15 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 
 def generate_launch_description():
+    """
+    Generates the launch description for the Gazebo simulation.
+
+    This function sets up and launches the Gazebo simulation environment,
+    spawns the robot, and starts the robot state publisher.
+
+    Returns:
+        LaunchDescription: The launch description object.
+    """
     package_name = "eagle_bot"
 
     pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(

@@ -1,3 +1,10 @@
+"""
+This script contains a ROS 2 node for publishing odometry information.
+
+It subscribes to a `cmd_vel` topic, integrates the velocity commands over time to
+calculate the robot's pose, and then publishes this information as both a
+`nav_msgs/msg/Odometry` message and a TF2 transform from `odom` to `base_link`.
+"""
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
@@ -7,7 +14,31 @@ from math import sin, cos
 
 
 class OdometryPublisher(Node):
+    """
+    A ROS 2 node to compute and publish odometry.
+
+    This class handles the integration of velocity commands to estimate the robot's
+    position and orientation. It publishes the resulting odometry to the `/odom`
+    topic and broadcasts the corresponding transform.
+
+    Attributes:
+        odom_pub: Publisher for the Odometry messages.
+        odom_broadcaster: Broadcaster for the odom to base_link transform.
+        cmd_vel_pub: Publisher for the command velocity topic.
+        x (float): The current x-coordinate of the robot.
+        y (float): The current y-coordinate of the robot.
+        th (float): The current orientation (theta) of the robot.
+        vx (float): The current linear velocity in the x-direction.
+        vy (float): The current linear velocity in the y-direction.
+        vth (float): The current angular velocity.
+        current_time: The current time from the ROS clock.
+        last_time: The time of the last update.
+        cmd_vel_sub: Subscription to the command velocity topic.
+        timer: Timer for the main control loop.
+        odom_publish_timer: Timer for publishing odometry messages.
+    """
     def __init__(self):
+        """Initializes the OdometryPublisher node."""
         super().__init__('odometry_publisher')
 
         self.odom_pub = self.create_publisher(Odometry, 'odom', 50)
@@ -36,11 +67,25 @@ class OdometryPublisher(Node):
         self.odom_publish_timer = self.create_timer(0.5, self.odom_publish_callback)  # Publish commands every 0.05 seconds
 
     def cmd_vel_callback(self, msg):
+        """
+        Callback for the cmd_vel topic.
+
+        This method updates the robot's velocities based on the incoming message.
+
+        Args:
+            msg (geometry_msgs.msg.Twist): The incoming command velocity message.
+        """
         self.vx = msg.linear.x
         self.vy = msg.linear.y
         self.vth = msg.angular.z
 
     def timer_callback(self):
+        """
+        Main timer callback for odometry calculation.
+
+        This method integrates the velocities over the time delta to update the
+        robot's pose (x, y, theta).
+        """
         self.current_time = self.get_clock().now()
 
         dt = (self.current_time - self.last_time).nanoseconds / 1e9
@@ -57,6 +102,12 @@ class OdometryPublisher(Node):
         self.last_time = self.current_time
 
     def odom_publish_callback(self):
+        """
+        Callback for publishing odometry messages and transforms.
+
+        This method constructs and publishes the Odometry message and the
+        corresponding TF2 transform. It also republishes the velocity commands.
+        """
         # Publish odometry message
         odom = Odometry()
         odom.header.stamp = self.current_time.to_msg()
@@ -108,6 +159,15 @@ class OdometryPublisher(Node):
 
 
 def main(args=None):
+    """
+    The main function to run the OdometryPublisher node.
+
+    Initializes rclpy, creates an instance of OdometryPublisher, and spins the
+    node until it's shut down.
+
+    Args:
+        args: Command-line arguments.
+    """
     rclpy.init(args=args)
     odom_publisher = OdometryPublisher()
     rclpy.spin(odom_publisher)

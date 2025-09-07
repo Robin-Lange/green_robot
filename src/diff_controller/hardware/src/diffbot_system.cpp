@@ -28,23 +28,29 @@ namespace diff_controller
 {
 CallbackReturn DiffBotSystemHardware::on_init(const hardware_interface::HardwareInfo & info)
 {
-
+  // Base class initialization
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
   }
-    time_ = std::chrono::system_clock::now();
-    cfg_.left_wheel_name = info_.hardware_parameters["left_wheel_name"];
-    cfg_.right_wheel_name = info_.hardware_parameters["right_wheel_name"];
-    cfg_.loop_rate = std::stof(info_.hardware_parameters["loop_rate"]);
-    cfg_.device = info_.hardware_parameters["device"];
-    cfg_.baud_rate = std::stoi(info_.hardware_parameters["baud_rate"]);
-    cfg_.timeout_ms = std::stoi(info_.hardware_parameters["timeout_ms"]);
-    cfg_.enc_counts_per_rev = std::stoi(info_.hardware_parameters["enc_counts_per_rev"]);
 
-    wheel_l_.setup(cfg_.left_wheel_name, cfg_.enc_counts_per_rev);
-    wheel_r_.setup(cfg_.right_wheel_name, cfg_.enc_counts_per_rev);
+  // Initialize time
+  time_ = std::chrono::system_clock::now();
 
+  // Load hardware parameters
+  cfg_.left_wheel_name = info_.hardware_parameters["left_wheel_name"];
+  cfg_.right_wheel_name = info_.hardware_parameters["right_wheel_name"];
+  cfg_.loop_rate = std::stof(info_.hardware_parameters["loop_rate"]);
+  cfg_.device = info_.hardware_parameters["device"];
+  cfg_.baud_rate = std::stoi(info_.hardware_parameters["baud_rate"]);
+  cfg_.timeout_ms = std::stoi(info_.hardware_parameters["timeout_ms"]);
+  cfg_.enc_counts_per_rev = std::stoi(info_.hardware_parameters["enc_counts_per_rev"]);
+
+  // Setup wheels
+  wheel_l_.setup(cfg_.left_wheel_name, cfg_.enc_counts_per_rev);
+  wheel_r_.setup(cfg_.right_wheel_name, cfg_.enc_counts_per_rev);
+
+  // Validate joint interfaces
   for (const hardware_interface::ComponentInfo & joint : info_.joints)
   {
     // DiffBotSystem has exactly two states and one command interface on each joint
@@ -101,11 +107,13 @@ std::vector<hardware_interface::StateInterface> DiffBotSystemHardware::export_st
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
 
+  // Export state interfaces for the left wheel (position and velocity)
   state_interfaces.emplace_back(hardware_interface::StateInterface(
     wheel_l_.name, hardware_interface::HW_IF_POSITION, &wheel_l_.pos));
   state_interfaces.emplace_back(hardware_interface::StateInterface(
     wheel_l_.name, hardware_interface::HW_IF_VELOCITY, &wheel_l_.vel));
 
+  // Export state interfaces for the right wheel (position and velocity)
   state_interfaces.emplace_back(hardware_interface::StateInterface(
     wheel_r_.name, hardware_interface::HW_IF_POSITION, &wheel_r_.pos));
   state_interfaces.emplace_back(hardware_interface::StateInterface(
@@ -118,9 +126,11 @@ std::vector<hardware_interface::CommandInterface> DiffBotSystemHardware::export_
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
 
+  // Export command interface for the left wheel (velocity)
   command_interfaces.emplace_back(hardware_interface::CommandInterface(
     wheel_l_.name, hardware_interface::HW_IF_VELOCITY, &wheel_l_.cmd));
 
+  // Export command interface for the right wheel (velocity)
   command_interfaces.emplace_back(hardware_interface::CommandInterface(
     wheel_r_.name, hardware_interface::HW_IF_VELOCITY, &wheel_r_.cmd));
 
@@ -130,18 +140,21 @@ std::vector<hardware_interface::CommandInterface> DiffBotSystemHardware::export_
 CallbackReturn DiffBotSystemHardware::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  // START: This part here is for exemplary purposes - Please do not copy to your production code
   RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Activating ...please wait...");
+
+  // Connect to the serial device
   if (comms_.connected())
   {
     comms_.disconnect();
   }
   comms_.connect(cfg_.device, cfg_.baud_rate, cfg_.timeout_ms);
   
-    if (!comms_.connected())
+  // Check if the connection was successful
+  if (!comms_.connected())
   {
     return CallbackReturn::ERROR;
   }
+
   RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Successfully activated!");
 
   return CallbackReturn::SUCCESS;
@@ -153,6 +166,7 @@ CallbackReturn DiffBotSystemHardware::on_deactivate(
  
   RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Deactivating ...please wait...");
 
+  // Disconnect from the serial device
   if (comms_.connected())
   {
     comms_.disconnect();
@@ -166,23 +180,22 @@ CallbackReturn DiffBotSystemHardware::on_deactivate(
 hardware_interface::return_type DiffBotSystemHardware::read(const rclcpp::Time & time,
     const rclcpp::Duration & period)
 {
-  //RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Reading...");
-
+  // Calculate time delta
   auto new_time = std::chrono::system_clock::now();
   std::chrono::duration<double> diff = new_time - time_;
   double deltaSeconds = diff.count();
   time_ = new_time;
-  // Update the last read time for the next iteration
-  
 
-
+  // Check if the communication is connected
   if (!comms_.connected())
   {
     return hardware_interface::return_type::ERROR;
   }
 
+  // Read encoder values from the hardware
   comms_.read_encoder_values(wheel_l_.enc, wheel_r_.enc);
 
+  // Calculate wheel position and velocity
   double pos_prev = wheel_l_.pos;
   wheel_l_.pos = wheel_l_.calc_enc_angle();
   wheel_l_.vel = (wheel_l_.pos - pos_prev) / deltaSeconds;
@@ -191,27 +204,24 @@ hardware_interface::return_type DiffBotSystemHardware::read(const rclcpp::Time &
   wheel_r_.pos = wheel_r_.calc_enc_angle();
   wheel_r_.vel = (wheel_r_.pos - pos_prev) / deltaSeconds;
 
-
-
   return hardware_interface::return_type::OK;
 }
 
 hardware_interface::return_type diff_controller::DiffBotSystemHardware::write(const rclcpp::Time & time,
     const rclcpp::Duration & period)
 {
- 
-  //RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
+  // Check if the communication is connected
   if (!comms_.connected())
-    {
-      return hardware_interface::return_type::ERROR;
-    }
+  {
+    return hardware_interface::return_type::ERROR;
+  }
 
-    int motor_l_counts_per_loop = wheel_l_.cmd / wheel_l_.rads_per_count / cfg_.loop_rate;
-    int motor_r_counts_per_loop = wheel_r_.cmd / wheel_r_.rads_per_count / cfg_.loop_rate;
-    comms_.set_motor_values(motor_l_counts_per_loop, motor_r_counts_per_loop);
+  // Calculate motor commands in counts per loop
+  int motor_l_counts_per_loop = wheel_l_.cmd / wheel_l_.rads_per_count / cfg_.loop_rate;
+  int motor_r_counts_per_loop = wheel_r_.cmd / wheel_r_.rads_per_count / cfg_.loop_rate;
 
-  //RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Joints successfully written!");
-
+  // Send motor commands to the hardware
+  comms_.set_motor_values(motor_l_counts_per_loop, motor_r_counts_per_loop);
  
   return hardware_interface::return_type::OK;
 }
